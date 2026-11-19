@@ -1,0 +1,8 @@
+free-books-catalog
+Copyright 2026 jasagiri
+
+This package reads, but does not contain, the lists of free-programming-books
+(https://github.com/EbookFoundation/free-programming-books, CC BY 4.0) and the pages of the Hillside
+Group's patterns catalog. Catalogs built with it reproduce facts from those lists (title, URL,
+section, stated licence); a consumer that publishes such a catalog must attribute
+free-programming-books under CC BY 4.0.
