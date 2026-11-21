@@ -2,10 +2,11 @@
 ##
 ## raw/ → meta.json, sources.jsonl, triage.json next to the config (or in --out). No network, no clock:
 ## running it twice on the same raw/ gives the same bytes (FBC-06). Exit 0 on success, 1 when
-## raw/ is incomplete, 2 on a usage error.
+## raw/ is incomplete or, with "commercialOnly", a source's licences do not allow commercial use
+## (nothing is written then, FBC-10), 2 on a usage error.
 
 import std/[os, parseopt]
-import free_books_catalog/build
+import free_books_catalog/[build, licences]
 import ./rawstore
 
 proc main(): int =
@@ -38,6 +39,10 @@ proc main(): int =
       "', the config pins '" & config.fpbCommit & "'; run catalog_fetch fpb"
     return 1
   let output = assemble(inputs)
+  if config.commercialOnly:
+    let errs = licenceErrors(output.sources)
+    for e in errs: stderr.writeLine "catalog_build: " & e
+    if errs.len > 0: return 1
   createDir(outDir)
   writeFile(outDir / "meta.json", output.metaJson)
   writeFile(outDir / "sources.jsonl", output.sourcesJsonl)

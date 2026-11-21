@@ -4,7 +4,7 @@ import std/[os, strutils, unittest]
 import ../tools/rawstore
 
 const full = """{"userAgent": "x-catalog/0.1", "rawEnv": "FBC_TEST_RAW", "rawDefault": "~/.cache/x/raw",
-  "fpbCommit": "0000000000000000000000000000000000000000", "hillside": false, "fpb": true,
+  "fpbCommit": "0000000000000000000000000000000000000000", "hillside": false, "fpb": true, "commercialOnly": true,
   "triage": {"sectionKeywords": ["algorithm"], "titleKeywords": [], "outFiles": ["casts/"]},
   "listed": [{"url": "https://tool.example/manual", "title": "Manual", "section": ["Manuals"], "licenses": ["ISC"]}]}"""
 
@@ -24,6 +24,7 @@ suite "FBC-09 config":
     check c.listed.len == 1
     check c.fpb
     check c.listed[0].licenses == @["ISC"]
+    check c.commercialOnly
     delEnv("FBC_TEST_RAW")
     check c.rawDir == getHomeDir() / ".cache/x/raw"
     putEnv("FBC_TEST_RAW", dir / "raw")
@@ -50,3 +51,12 @@ suite "FBC-09 config":
     let c = loadConfig(dir / "config.json")
     check not c.fpb
     check c.listed[0].licenses.len == 0
+
+  # SPEC: FBC-09
+  test "FBC-09 Given a config without the commercialOnly switch, when loaded, then it is an error naming the field":
+    writeFile(dir / "config.json", full.replace(" \"commercialOnly\": true,", ""))
+    try:
+      discard loadConfig(dir / "config.json") # the call is expected to raise; its value is irrelevant
+      check false
+    except ValueError as e:
+      check "commercialOnly" in e.msg

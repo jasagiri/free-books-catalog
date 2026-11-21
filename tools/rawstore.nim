@@ -29,6 +29,7 @@ type CatalogConfig* = object
   fpbCommit*: string ## free-programming-books commit to read (a full SHA)
   hillside*: bool ## include the Hillside patterns catalog
   fpb*: bool ## include free-programming-books; off, the catalog holds only listed (and Hillside) sources
+  commercialOnly*: bool ## every source must state licences that allow commercial use (FBC-10)
   rules*: TriageRules
   listed*: seq[ListedSource]
 
@@ -42,7 +43,7 @@ proc loadConfig*(path: string): CatalogConfig {.raises: [IOError, OSError, Value
   ## agent or cache would be wrong for both.
   let j = try: parseJson(readFile(path))
           except JsonParsingError as e: raise newException(ValueError, path & ": " & e.msg)
-  for key in ["userAgent", "rawEnv", "rawDefault", "fpbCommit", "hillside", "fpb", "triage"]:
+  for key in ["userAgent", "rawEnv", "rawDefault", "fpbCommit", "hillside", "fpb", "commercialOnly", "triage"]:
     if not j.hasKey(key): raise newException(ValueError, path & ": missing \"" & key & "\"")
   result.dir = path.parentDir
   result.userAgent = j["userAgent"].getStr
@@ -51,6 +52,7 @@ proc loadConfig*(path: string): CatalogConfig {.raises: [IOError, OSError, Value
   result.fpbCommit = j["fpbCommit"].getStr
   result.hillside = j["hillside"].getBool
   result.fpb = j["fpb"].getBool
+  result.commercialOnly = j["commercialOnly"].getBool
   let t = j["triage"]
   result.rules = TriageRules(sectionKeywords: t.strings("sectionKeywords"),
     titleKeywords: t.strings("titleKeywords"),

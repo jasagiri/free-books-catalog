@@ -22,6 +22,7 @@ Put a `catalog/config.json` in the repository:
   "fpbCommit": "<full 40-character SHA of free-programming-books>",
   "hillside": false,
   "fpb": true,
+  "commercialOnly": false,
   "triage": {
     "sectionKeywords": ["bash", "shell", "unix"],
     "titleKeywords": ["command line"],
@@ -38,7 +39,10 @@ Put a `catalog/config.json` in the repository:
 
 `"fpb": false` leaves free-programming-books out: the catalog then holds only the listed sources
 (and Hillside, when on), for a consumer that must know the licence of every source it lists.
-`licenses` is optional; it is copied into the source as stated.
+`licenses` is optional; it is copied into the source as stated. `"commercialOnly": true` makes
+`catalog_build` refuse to write a catalog in which a source states no licence or one that is not on
+`commercialLicenses` (`src/free_books_catalog/licences.nim`: licences that allow any use, commercial
+included; non-commercial and no-derivatives licences are not on it).
 
 Then, from the repository root:
 

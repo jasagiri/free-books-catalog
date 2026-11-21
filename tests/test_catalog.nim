@@ -1,8 +1,8 @@
-## E tests for docs/specification.md FBC-01…FBC-08.
+## E tests for docs/specification.md FBC-01…FBC-08 and FBC-10.
 
 import std/[json, os, strutils, tables, unittest]
 import propcheck
-import free_books_catalog/[build, fpb, hillside, model, triage]
+import free_books_catalog/[build, fpb, hillside, licences, model, triage]
 
 const root = currentSourcePath().parentDir.parentDir
 
@@ -187,6 +187,26 @@ suite "NCK-C catalog":
     check "\"licenses\":[\"GPL-2.0-or-later\",\"MIT\"]" in o.sourcesJsonl
     inputs.listed[0].licenses = @[]
     check "licenses" notin assemble(inputs).sourcesJsonl
+
+  # SPEC: FBC-10
+  test "FBC-10 Given listed sources, when their licences are checked, then only a missing licence or one off the list is reported, naming the source and the licence":
+    var inputs = BuildInputs(fetchedAt: "t", rules: rules)
+    inputs.listed = @[
+      ListedSource(url: "https://ok.example/a", title: "A", licenses: @["MIT", "CC-BY-SA-4.0"]),
+      ListedSource(url: "https://ok.example/b", title: "B", licenses: @["GFDL-1.3-no-invariants-or-later"])]
+    check licenceErrors(assemble(inputs).sources).len == 0
+    inputs.listed.add ListedSource(url: "https://nc.example/c", title: "C", licenses: @["MIT", "CC-BY-NC-4.0"])
+    inputs.listed.add ListedSource(url: "https://none.example/d", title: "D")
+    let errs = licenceErrors(assemble(inputs).sources)
+    check errs.len == 2
+    var nc, none = false
+    for e in errs:
+      if "nc.example/c" in e and "CC-BY-NC-4.0" in e and "MIT" notin e: nc = true
+      if "none.example/d" in e and "no licence" in e: none = true
+    check nc and none
+    for bad in ["CC-BY-ND-4.0", "CC-BY-NC-SA-4.0", "cc-by-4.0", ""]:
+      inputs.listed = @[ListedSource(url: "https://x.example/e", title: "E", licenses: @[bad])]
+      check licenceErrors(assemble(inputs).sources).len == 1
 
   # SPEC: FBC-05
   test "FBC-05 Given hillsideCore off, when a hillside entry is classified, then it is not core by origin alone":
