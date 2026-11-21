@@ -21,6 +21,7 @@ type
     url*: string
     title*: string
     section*: seq[string]
+    licenses*: seq[string] ## as the consumer states them; empty when it states none
 
   BuildInputs* = object
     fpbCommit*: string
@@ -117,7 +118,7 @@ func hillsideSources(inputs: BuildInputs): seq[Source] {.raises: [].} =
 
 func listedSources(inputs: BuildInputs): seq[Source] {.raises: [].} =
   for l in inputs.listed:
-    result.add Source(id: sourceIdOf(l.url), url: l.url, title: l.title, lang: "en",
+    result.add Source(id: sourceIdOf(l.url), url: l.url, title: l.title, lang: "en", licenses: l.licenses,
       listings: @[Listing(origin: oListed, file: "catalog/config.json", depth: 1, section: l.section)])
 
 func expansionSources(inputs: BuildInputs; depth1: Table[string, Source]): seq[Source] {.raises: [].} =

@@ -21,6 +21,7 @@ Put a `catalog/config.json` in the repository:
   "rawDefault": "~/.cache/my-knowledge/raw",
   "fpbCommit": "<full 40-character SHA of free-programming-books>",
   "hillside": false,
+  "fpb": true,
   "triage": {
     "sectionKeywords": ["bash", "shell", "unix"],
     "titleKeywords": ["command line"],
@@ -29,10 +30,15 @@ Put a `catalog/config.json` in the repository:
     "hillsideCore": false
   },
   "listed": [
-    {"url": "https://example.org/manual", "title": "Tool manual", "section": ["Manuals"]}
+    {"url": "https://example.org/manual", "title": "Tool manual", "section": ["Manuals"],
+     "licenses": ["MIT"]}
   ]
 }
 ```
+
+`"fpb": false` leaves free-programming-books out: the catalog then holds only the listed sources
+(and Hillside, when on), for a consumer that must know the licence of every source it lists.
+`licenses` is optional; it is copied into the source as stated.
 
 Then, from the repository root:
 

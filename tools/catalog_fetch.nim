@@ -134,6 +134,9 @@ proc runAll(jobs: seq[Job]; s: Settings; get: bool): Table[string, (int, string,
   results[]
 
 proc stepFpb(s: Settings): int =
+  if not s.config.fpb:
+    echo "catalog_fetch fpb: the config switches free-programming-books off; nothing to fetch"
+    return 0
   let commit = s.config.fpbCommit
   if commit.len != 40:
     stderr.writeLine "catalog_fetch fpb: fpbCommit in the config must be a full 40-character SHA"

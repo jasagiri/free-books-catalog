@@ -177,6 +177,17 @@ suite "NCK-C catalog":
     check o.sources[0].listings[0].origin == oListed
     check o.relevance[$o.sources[0].id] == core
 
+  # SPEC: FBC-08
+  test "FBC-08 Given a listed source with licences in the config, when assembled, then the source states them":
+    var inputs = BuildInputs(fetchedAt: "t", rules: rules)
+    inputs.listed = @[ListedSource(url: "https://tool.example/manual", title: "Tool manual",
+      section: @["Manuals"], licenses: @["MIT", "GPL-2.0-or-later"])]
+    let o = assemble(inputs)
+    check o.sources[0].licenses == @["GPL-2.0-or-later", "MIT"]
+    check "\"licenses\":[\"GPL-2.0-or-later\",\"MIT\"]" in o.sourcesJsonl
+    inputs.listed[0].licenses = @[]
+    check "licenses" notin assemble(inputs).sourcesJsonl
+
   # SPEC: FBC-05
   test "FBC-05 Given hillsideCore off, when a hillside entry is classified, then it is not core by origin alone":
     var r = rules

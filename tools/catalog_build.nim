@@ -29,11 +29,11 @@ proc main(): int =
   let config = loadConfig(configPath)
   if raw.len == 0: raw = config.rawDir
   if outDir.len == 0: outDir = config.dir
-  if not dirExists(raw / "fpb"):
+  if config.fpb and not dirExists(raw / "fpb"):
     stderr.writeLine "catalog_build: " & raw & "/fpb is missing; run catalog_fetch fpb first"
     return 1
   let inputs = readInputs(raw, config)
-  if inputs.fpbCommit != config.fpbCommit:
+  if config.fpb and inputs.fpbCommit != config.fpbCommit:
     stderr.writeLine "catalog_build: " & raw & "/manifest.json has fpb commit '" & inputs.fpbCommit &
       "', the config pins '" & config.fpbCommit & "'; run catalog_fetch fpb"
     return 1

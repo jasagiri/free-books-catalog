@@ -28,6 +28,7 @@ type CatalogConfig* = object
   rawDefault*: string ## "~/" expands to the home directory
   fpbCommit*: string ## free-programming-books commit to read (a full SHA)
   hillside*: bool ## include the Hillside patterns catalog
+  fpb*: bool ## include free-programming-books; off, the catalog holds only listed (and Hillside) sources
   rules*: TriageRules
   listed*: seq[ListedSource]
 
@@ -41,7 +42,7 @@ proc loadConfig*(path: string): CatalogConfig {.raises: [IOError, OSError, Value
   ## agent or cache would be wrong for both.
   let j = try: parseJson(readFile(path))
           except JsonParsingError as e: raise newException(ValueError, path & ": " & e.msg)
-  for key in ["userAgent", "rawEnv", "rawDefault", "fpbCommit", "hillside", "triage"]:
+  for key in ["userAgent", "rawEnv", "rawDefault", "fpbCommit", "hillside", "fpb", "triage"]:
     if not j.hasKey(key): raise newException(ValueError, path & ": missing \"" & key & "\"")
   result.dir = path.parentDir
   result.userAgent = j["userAgent"].getStr
@@ -49,6 +50,7 @@ proc loadConfig*(path: string): CatalogConfig {.raises: [IOError, OSError, Value
   result.rawDefault = j["rawDefault"].getStr
   result.fpbCommit = j["fpbCommit"].getStr
   result.hillside = j["hillside"].getBool
+  result.fpb = j["fpb"].getBool
   let t = j["triage"]
   result.rules = TriageRules(sectionKeywords: t.strings("sectionKeywords"),
     titleKeywords: t.strings("titleKeywords"),
@@ -57,7 +59,7 @@ proc loadConfig*(path: string): CatalogConfig {.raises: [IOError, OSError, Value
   if j.hasKey("listed"):
     for x in j["listed"]:
       result.listed.add ListedSource(url: x["url"].getStr, title: x["title"].getStr,
-        section: x.strings("section"))
+        section: x.strings("section"), licenses: x.strings("licenses"))
 
 proc rawDir*(c: CatalogConfig): string =
   let d = getEnv(c.rawEnv, c.rawDefault)
@@ -118,8 +120,9 @@ proc readInputs*(raw: string; c: CatalogConfig): BuildInputs {.raises: [IOError,
   result.reach = m.reach
   let fpbRoot = raw / "fpb"
   var files: seq[string]
-  for dir in ["books", "courses", "more", "casts"]:
-    for f in walkFiles(fpbRoot / dir / "*.md"): files.add f
+  if c.fpb:
+    for dir in ["books", "courses", "more", "casts"]:
+      for f in walkFiles(fpbRoot / dir / "*.md"): files.add f
   for f in files.sorted:
     result.fpbFiles.add (f.relativePath(fpbRoot), readFile(f))
   var pages: seq[string]
