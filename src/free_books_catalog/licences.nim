@@ -19,6 +19,7 @@ const commercialLicenses* = [
   "LGPL-3.0-only", "LGPL-3.0-or-later",
   "GFDL-1.3-only", "GFDL-1.3-or-later", "GFDL-1.3-no-invariants-only",
   "GFDL-1.3-no-invariants-or-later",
+  "EUPL-1.2", "SSH-OpenSSH", "curl",
   "Linux-man-pages-copyleft", "Vixie-Cron", "lsof"]
 
 func licenceErrors*(sources: openArray[Source]): seq[string] {.raises: [].} =
