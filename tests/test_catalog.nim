@@ -85,6 +85,17 @@ suite "NCK-C catalog":
       check m.title == "A"
       check m.listings == @[l]
 
+  # SPEC: FBC-02
+  test "FBC-02 Given two mentions of one URL with the same first listing but different titles and URL spellings, when merged or deduplicated in either order, then the result is the same":
+    let l = Listing(origin: oFpb, file: "books/a.md", section: @["S"], depth: 1)
+    let a = Source(id: sourceIdOf("https://t.example/x"), url: "https://t.example/x", title: "Alpha", authors: "P", listings: @[l])
+    let b = Source(id: a.id, url: "https://T.example/x/", title: "Beta", authors: "Q", listings: @[l])
+    check merge(a, b) == merge(b, a)
+    check dedupe([a, b]) == dedupe([b, a])
+    let c = Source(id: a.id, url: a.url, title: "Gamma")
+    let d = Source(id: a.id, url: a.url, title: "Delta")
+    check merge(c, d) == merge(d, c)
+
   # SPEC: FBC-03
   test "FBC-03 Given a catalog page, when parsed, then web links and the next page are found":
     let html = """<li><a href="/patterns/patterns-catalog?task=weblink.go&amp;id=7" class="category">Portland Pattern Repository</a></li>

@@ -97,13 +97,25 @@ func union(a, b: seq[string]): seq[string] {.raises: [].} =
     if x notin result: result.add x
   result.sort()
 
+func cmpFirst(a, b: Source): int {.raises: [].} =
+  ## Which of two mentions gives the merged source its URL spelling, title, authors and lang: the
+  ## one with the earlier first listing (a mention with listings before one without), then the
+  ## smaller of those fields. A total order on them, so merge does not depend on argument order.
+  if a.listings.len > 0 and b.listings.len > 0:
+    result = cmpListing(a.listings[0], b.listings[0])
+  else:
+    result = cmp(b.listings.len, a.listings.len)
+  if result == 0: result = cmp(a.url, b.url)
+  if result == 0: result = cmp(a.title, b.title)
+  if result == 0: result = cmp(a.authors, b.authors)
+  if result == 0: result = cmp(a.lang, b.lang)
+
 func merge*(a, b: Source): Source {.raises: [].} =
   ## Two mentions of one URL become one source. Commutative and idempotent up to the order of
   ## the listings, which is sorted: merge(a, b) == merge(b, a), merge(a, a) == a with a sorted.
-  ## Title, authors and lang come from the earlier listing (by cmpListing), so the result does not
-  ## depend on the order the lists were read in.
-  let first = if b.listings.len > 0 and (a.listings.len == 0 or
-      cmpListing(b.listings[0], a.listings[0]) < 0): b else: a
+  ## URL spelling, title, authors and lang come from the mention cmpFirst puts first, so the
+  ## result does not depend on the order the lists were read in.
+  let first = if cmpFirst(b, a) < 0: b else: a
   result = first
   result.formats = union(a.formats, b.formats)
   result.licenses = union(a.licenses, b.licenses)

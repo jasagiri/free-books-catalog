@@ -50,10 +50,10 @@ rule that keeps a book link only when its text is not empty and it is seen for t
    `model` again.
 2. Load every report into `docs/quality/survivors.json` with `nim-muter-ledger sync`, classify each
    survivor, and run `nim-muter-ledger check docs/quality/survivors.json` until it exits 0.
-3. Open question for the classification: when two mentions of one URL have the same first listing
-   but different titles, `merge` keeps the title of its first argument, so the result depends on
-   the order of the inputs. FBC-06 says it must not. This is why the `<` → `<=` mutant on the
-   choice of `first` survives.
+3. (Done.) Two mentions of one URL with the same first listing but different titles used to
+   merge to the title of the first argument, against FBC-06; `merge` now picks the mention by a
+   total order (first listing, then URL spelling, title, authors, lang), and an FBC-02 test checks
+   both argument orders.
 
 Most of the 38 links survivors move a boundary of `find` (`< 0` to `<= 0`, `0` to `1`) where the
 match cannot be at position 0, or change a slice end that the next step does not read. These look
