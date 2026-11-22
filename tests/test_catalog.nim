@@ -65,6 +65,26 @@ suite "NCK-C catalog":
     check ab[0].formats == @["PDF"]
     check dedupe(ab) == ab
 
+  # SPEC: FBC-02
+  test "FBC-02 Given known strings, when identified, then the id is FNV-1a 64 in lower-case hex; strings without scheme or host are only trimmed":
+    check $sourceIdOf("a") == "af63dc4c8601ec8c"
+    check $sourceIdOf("foobar") == "85944171f73967e8"
+    check $sourceIdOf("https://Example.org/a/") == "4130e41a1ced2904"
+    check normalizeUrl("  not a url  ") == "not a url"
+    check normalizeUrl("urn:isbn:123/") == "urn:isbn:123/"
+    check normalizeUrl("//Host.example/a/") == "//Host.example/a/"
+
+  # SPEC: FBC-02
+  test "FBC-02 Given two mentions with different formats, archive marks and one without listings, when merged, then formats are united and sorted, archived wins and the title comes from the listed one":
+    let l = Listing(origin: oFpb, file: "books/a.md", section: @["S"], depth: 1)
+    let a = Source(id: sourceIdOf("https://m.example"), title: "A", formats: @["PDF"], archived: true, listings: @[l])
+    let b = Source(id: a.id, title: "B", formats: @["EPUB"])
+    for m in [merge(a, b), merge(b, a)]:
+      check m.formats == @["EPUB", "PDF"]
+      check m.archived
+      check m.title == "A"
+      check m.listings == @[l]
+
   # SPEC: FBC-03
   test "FBC-03 Given a catalog page, when parsed, then web links and the next page are found":
     let html = """<li><a href="/patterns/patterns-catalog?task=weblink.go&amp;id=7" class="category">Portland Pattern Repository</a></li>
@@ -140,6 +160,26 @@ suite "NCK-C catalog":
     check assemble(inputs).relevance[id] == adjacent
     inputs.overrides[id] = core
     check assemble(inputs).relevance[id] == core
+
+  # SPEC: FBC-06
+  test "FBC-06 Given invalid UTF-8 bytes and unsorted listings, when cleaned and deduplicated, then each bad byte is U+FFFD and listings, formats and licences are in their stated order":
+    check validUtf8("ok") == "ok"
+    check validUtf8("a\xffb\xfe") == "a\u{FFFD}b\u{FFFD}"
+    check validUtf8("\xffa") == "\u{FFFD}a"
+    check validUtf8("caf\xc3\xa9") == "caf\xc3\xa9"
+    let A = Listing(origin: oFpb, file: "a", section: @["x"], depth: 1)
+    let B = Listing(origin: oFpb, file: "a", section: @["y"], depth: 1)
+    let C = Listing(origin: oFpb, file: "b", section: @["a"], depth: 1)
+    let D = Listing(origin: oHillside, file: "a", depth: 1)
+    let E = Listing(origin: oFpb, file: "a", depth: 2, via: "1")
+    let F = Listing(origin: oFpb, file: "a", depth: 2, via: "2")
+    let s = Source(id: sourceIdOf("https://d.example"), formats: @["PDF", "EPUB"],
+      licenses: @["MIT", "CC-BY-4.0"], listings: @[F, D, C, E, B, A])
+    let d = dedupe([s])
+    check d.len == 1
+    check d[0].listings == @[A, B, C, D, E, F]
+    check d[0].formats == @["EPUB", "PDF"]
+    check d[0].licenses == @["CC-BY-4.0", "MIT"]
 
   # SPEC: FBC-06
   test "FBC-06 Given the same inputs in another order, when assembled twice, then the bytes are identical and every line is valid JSON":
