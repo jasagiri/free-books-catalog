@@ -61,6 +61,9 @@ If you publish a catalog built with this package, attribute free-programming-boo
 ## Development
 
 ```sh
-nim test     # FBC-01…FBC-11 (needs ../nim-propcheck)
+nim test           # FBC-01…FBC-11 (needs ../nim-propcheck)
 nim tools
+nim specCoverage   # G1 table → docs/quality/g1-spec-coverage.md (needs ../nim-spec-coverage)
 ```
+
+Mutation testing (G2) is only partly measured; its state is in `docs/quality/g2-mutation.md`.
