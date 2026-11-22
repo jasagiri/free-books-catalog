@@ -102,8 +102,10 @@ func parseEntry*(line: string): (bool, Source) {.raises: [].} =
     return (false, Source())
   var rest = t[after .. ^1].strip
   var src = Source(url: url, title: title.strip, id: sourceIdOf(url))
-  if rest.startsWith("- ") or rest.startsWith("– "):
-    rest = rest[2 .. ^1]
+  for sep in ["- ", "– "]:
+    if rest.startsWith(sep):
+      rest = rest[sep.len .. ^1]   # "–" is three bytes in UTF-8
+      break
   let open = rest.find('(')
   src.authors = (if open >= 0: rest[0 ..< open] else: rest).strip(chars = {' ', '*', '-'})
   for g in parenGroups(rest):

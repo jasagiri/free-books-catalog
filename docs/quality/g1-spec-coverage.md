@@ -10,9 +10,9 @@ Also from the IDs in the first cell of the table rows of
 
 | ID | test files (count) |
 |---|---|
-| FBC-01 | tests/test_catalog.nim (2) |
-| FBC-02 | tests/test_catalog.nim (5) |
-| FBC-03 | tests/test_catalog.nim (2) |
+| FBC-01 | tests/test_catalog.nim (3) |
+| FBC-02 | tests/test_catalog.nim (6) |
+| FBC-03 | tests/test_catalog.nim (3) |
 | FBC-04 | tests/test_catalog.nim (2) |
 | FBC-05 | tests/test_catalog.nim (4) |
 | FBC-06 | tests/test_catalog.nim (2) |

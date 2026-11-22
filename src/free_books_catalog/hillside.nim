@@ -30,10 +30,12 @@ func bookCategoryUrl*(category: string): string {.raises: [].} =
   HillsideBase & "/patterns/books/" & category & "?limit=0"
 
 func digitsAt(s: string; start: int): int {.raises: [].} =
-  ## The decimal number at `start` (at most 9 digits, so it cannot overflow), or -1 when none.
+  ## The decimal number at `start`, or -1 when there is no digit or more than 18 (a longer number
+  ## would overflow int; shortening it would give another id).
   result = -1
   var i = start
-  while i < s.len and i - start < 9 and s[i] in Digits:
+  while i < s.len and s[i] in Digits:
+    if i - start == 18: return -1
     result = (if result < 0: 0 else: result * 10) + (ord(s[i]) - ord('0'))
     inc i
 

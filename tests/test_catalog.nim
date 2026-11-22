@@ -38,6 +38,29 @@ suite "NCK-C catalog":
     check langOfFile("free-programming-books-subjects.md") == "en"
     check langOfFile("free-courses-pt_BR.md") == "pt_BR"
 
+  # SPEC: FBC-01
+  test "FBC-01 Given file names, heading levels, incomplete links and nested or stray parentheses, when parsed, then language, heading path and fields follow the stated rules":
+    check langOfFile("README.md") == "en"
+    check langOfFile("free-courses-fil.md") == "fil"
+    check langOfFile("free-books-java.md") == "en"
+    check langOfFile("free-programming-books-pt_BR.md") == "pt_BR"
+    let xs = parseList("books/x-en.md", "# A\n## B\n* [x](http://x.example)\n" &
+      "###### F\n####### G\n* [y](http://y.example)\n### Q\n* [z](http://z.example)\n")
+    check xs.len == 3
+    check xs[0].listings[0].section == @["A", "B"]
+    check xs[1].listings[0].section == @["A", "B", "F"]
+    check xs[2].listings[0].section == @["A", "B", "Q"]
+    for bad in ["* [abc", "* [Title] https://e.org/x)", "* [A](https://a.example"]:
+      check not parseEntry(bad)[0]
+    let (ok1, nested) = parseEntry("* [T](https://e.org) - A (CC BY (v4))")
+    check ok1 and nested.licenses == @["CC BY (v4)"] and nested.authors == "A"
+    let (ok2, stray) = parseEntry("* [T](https://e.org) - Foo) (PDF)")
+    check ok2 and stray.formats == @["PDF"]
+    let (ok3, bare) = parseEntry("* [T](https://e.org) (PDF)")
+    check ok3 and bare.authors == "" and bare.formats == @["PDF"]
+    let (ok4, dash) = parseEntry("* [T](https://e.org) – Author")
+    check ok4 and dash.authors == "Author"
+
   # SPEC: FBC-02
   test "FBC-02 Given URLs differing only in case of host, fragment or trailing slash, when identified, then they share one id":
     check sourceIdOf("https://Example.org/a/") == sourceIdOf("https://example.org/a#top")
@@ -95,6 +118,18 @@ suite "NCK-C catalog":
     let c = Source(id: a.id, url: a.url, title: "Gamma")
     let d = Source(id: a.id, url: a.url, title: "Delta")
     check merge(c, d) == merge(d, c)
+    let e = Source(id: a.id, url: a.url, title: "Same", authors: "Q")
+    let f = Source(id: a.id, url: a.url, title: "Same", authors: "P")
+    check merge(e, f) == merge(f, e)
+    let g = Source(id: a.id, url: a.url, title: "Same", lang: "ja")
+    let k = Source(id: a.id, url: a.url, title: "Same", lang: "en")
+    check merge(g, k) == merge(k, g)
+    let late = Source(id: a.id, url: a.url, title: "Late",
+      listings: @[Listing(origin: oFpb, file: "courses/c.md", depth: 1)])
+    let early = Source(id: a.id, url: a.url, title: "Zeta",
+      listings: @[Listing(origin: oFpb, file: "books/b.md", depth: 1)])
+    check merge(late, early).title == "Zeta"
+    check merge(early, late).title == "Zeta"
 
   # SPEC: FBC-03
   test "FBC-03 Given a catalog page, when parsed, then web links and the next page are found":
@@ -119,6 +154,24 @@ suite "NCK-C catalog":
     for s in o.sources: urls.add s.url
     check "http://c2.com/ppr/index.html" in urls
     check "https://hillside.net/patterns/books/design-patterns/277-service-design-patterns" in urls
+
+  # SPEC: FBC-03
+  test "FBC-03 Given page numbers, ids of unusual length and book links in several forms, when parsed, then URLs, ids and book pages follow the stated rules":
+    check catalogPageUrl(0) == "https://hillside.net/patterns/patterns-catalog"
+    check catalogPageUrl(20) == "https://hillside.net/patterns/patterns-catalog?start=20"
+    let w = "/patterns/patterns-catalog?task=weblink.go&amp;id="
+    let page = parseCatalogPage("<a href=\"" & w & "0\">Zero</a><a href=\"" & w & "x\">NoId</a>" &
+      "<a href=\"" & w & "1234567890\">Ten</a><a href=\"" & w & "1234567890123456789\">Nineteen</a>" &
+      "<a href=\"/patterns/patterns-catalog?start=x\">Next</a>")
+    check page.links == @[WebLink(linkId: 0, title: "Zero"), WebLink(linkId: 1234567890, title: "Ten")]
+    check page.nextStart == -1
+    let books = parseBookCategory("""<a href="/patterns/books/design-patterns/1-x"></a>""" &
+      """<a href="/patterns/books/design-patterns/1-x">X</a><a href="/other">Other</a>""" &
+      """<a href="/patterns/books/coding-patterns-idioms-style/3-z">Z</a>""" &
+      """<a href="/patterns/books/design-patterns/2-y">Y</a><a href="/patterns/books/design-patterns/1-x">X again</a>""",
+      "design-patterns")
+    check books == @[Anchor(href: "https://hillside.net/patterns/books/design-patterns/1-x", text: "X"),
+                     Anchor(href: "https://hillside.net/patterns/books/design-patterns/2-y", text: "Y")]
 
   # SPEC: FBC-04
   test "FBC-04 Given meta-lists on GitHub and elsewhere, when checked, then only the GitHub one is followed and the other has a reason":
