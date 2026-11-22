@@ -61,6 +61,6 @@ If you publish a catalog built with this package, attribute free-programming-boo
 ## Development
 
 ```sh
-nim test     # FBC-01…FBC-09 (needs ../nim-propcheck)
+nim test     # FBC-01…FBC-11 (needs ../nim-propcheck)
 nim tools
 ```

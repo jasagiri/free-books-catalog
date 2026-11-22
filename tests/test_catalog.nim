@@ -1,8 +1,8 @@
-## E tests for docs/specification.md FBC-01…FBC-08 and FBC-10.
+## E tests for docs/specification.md FBC-01…FBC-08, FBC-10 and FBC-11.
 
 import std/[json, os, strutils, tables, unittest]
 import propcheck
-import free_books_catalog/[build, fpb, hillside, licences, model, triage]
+import free_books_catalog/[build, fpb, hillside, licences, links, model, triage]
 
 const root = currentSourcePath().parentDir.parentDir
 
@@ -209,9 +209,53 @@ suite "NCK-C catalog":
       check licenceErrors(assemble(inputs).sources).len == 1
 
   # SPEC: FBC-05
+  test "FBC-05 Given keywords inside a heading, at the four-byte limit and on depth-2 titles, when classified, then word boundaries and the depth-2 title keywords decide":
+    proc fpbSource(title, heading: string): Source =
+      Source(title: title, listings: @[Listing(origin: oFpb, depth: 1, file: "books/x-en.md", section: @[heading])])
+    proc depth2(title: string): Source =
+      Source(title: title, listings: @[Listing(origin: oFpb, depth: 2, file: "books/x-en.md")])
+    check classify(fpbSource("Q", "Advanced Algorithms"), rules) == core
+    check classify(fpbSource("Q", "Leaning Tower"), rules) == adjacent
+    var r = rules
+    r.sectionKeywords = @["graph"]
+    check classify(fpbSource("Q", "Graphics"), r) == core
+    check classify(depth2("Pattern Language"), rules) == core
+    check classify(depth2("Algorithm Notes"), rules) == core
+    check classify(depth2("Cooking"), rules) == adjacent
+
+  # SPEC: FBC-05
   test "FBC-05 Given hillsideCore off, when a hillside entry is classified, then it is not core by origin alone":
     var r = rules
     r.hillsideCore = false
     let s = Source(title: "Something", listings: @[Listing(origin: oHillside, depth: 1)])
     check classify(s, r) == adjacent
     check classify(s, rules) == core
+
+suite "FBC-11 links":
+  # SPEC: FBC-11
+  test "FBC-11 Given HTML anchors in several attribute forms, when scanned, then each non-empty href is resolved and its text cleaned, in page order":
+    let html = """<abbr>no</abbr><A CLASS="c" HREF="/x?a=1&amp;b=2">  Hello <b>bold</b>&amp;  more </a>""" &
+      """<a data-href="/wrong" href='rel/p'>R</a><a href=https://abs.example/q>Q</a>""" &
+      """<a href=/u target=x>U</a><a href="">E</a><a name="n">N</a><a href="/broken>B</a>""" &
+      """<a href="/last">L</a> trailing <a"""
+    let xs = htmlAnchors(html, "https://h.example/dir/page")
+    check xs == @[
+      Anchor(href: "https://h.example/x?a=1&b=2", text: "Hello bold& more"),
+      Anchor(href: "https://h.example/dir/rel/p", text: "R"),
+      Anchor(href: "https://abs.example/q", text: "Q"),
+      Anchor(href: "https://h.example/u", text: "U"),
+      Anchor(href: "https://h.example/last", text: "L")]
+    check htmlAnchors("""<a href="/z">no end""", "https://h.example/").len == 0
+    check htmlAnchors("""<a href="/z" """, "https://h.example/").len == 0
+
+  # SPEC: FBC-11
+  test "FBC-11 Given Markdown links, when scanned, then one-line links with a URL are found in order, resolved, with the title dropped":
+    let md = "[Zero](z) See [ Text one ](rel/a \"title\") and [Two](https://t.example/b).\n" &
+      "[broken\nline](https://n.example) [Empty]() [Three](c) [open](never"
+    check markdownAnchors(md, "https://m.example/d/") == @[
+      Anchor(href: "https://m.example/d/z", text: "Zero"),
+      Anchor(href: "https://m.example/d/rel/a", text: "Text one"),
+      Anchor(href: "https://t.example/b", text: "Two"),
+      Anchor(href: "https://m.example/d/c", text: "Three")]
+    check markdownAnchors("[R](rel/p)", "") == @[Anchor(href: "rel/p", text: "R")]
+    check markdownAnchors("no links [here", "https://m.example/").len == 0

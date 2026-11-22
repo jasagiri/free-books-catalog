@@ -14,14 +14,15 @@ Also from the IDs in the first cell of the table rows of
 | FBC-02 | tests/test_catalog.nim (3) |
 | FBC-03 | tests/test_catalog.nim (2) |
 | FBC-04 | tests/test_catalog.nim (2) |
-| FBC-05 | tests/test_catalog.nim (3) |
+| FBC-05 | tests/test_catalog.nim (4) |
 | FBC-06 | tests/test_catalog.nim (1) |
 | FBC-07 | tests/test_catalog.nim (1) |
 | FBC-08 | tests/test_catalog.nim (2) |
 | FBC-09 | tests/test_config.nim (5) |
 | FBC-10 | tests/test_build_tool.nim (3), tests/test_catalog.nim (1) |
+| FBC-11 | tests/test_catalog.nim (2) |
 
-Declared: 10  Covered: 10  Uncovered: 0
+Declared: 11  Covered: 11  Uncovered: 0
 
 ## Uncovered declared IDs
 
