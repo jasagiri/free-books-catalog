@@ -15,7 +15,7 @@ the built-in directory names).
 | `triage.nim` | same | 38 | 30 | 1 | 7 |
 | `links.nim` | same | 98 | 35 | 0 | 63 |
 | `model.nim` | same | 65 | 35 | 2 | 28 |
-| `hillside.nim` | same | not measured: the run stopped when the disk filled | | | |
+| `hillside.nim` | same | not measured here: the run stopped when the disk filled (measured later, below) | | | |
 | `fpb.nim` | same | not measured: stopped at 22 of 154 | | | |
 | `build.nim` | same | not measured | | | |
 | `tools/rawstore.nim` | `tests/test_config.nim`, `tests/test_build_tool.nim` | not measured | | | |
@@ -39,9 +39,14 @@ survived. For `triage.nim` (5 mutants) and `model.nim` (16 mutants), the targete
 applied by hand, and each one fails the new tests. Those two modules have not been measured again
 with nim-muter.
 
+`hillside.nim` was measured with the tests of `4bfcb235` (FBC-11 included): 35 mutants (compile
+errors left out), 17 killed, 0 timeouts, 18 survived, none classified yet. Most move a boundary
+when the catalog page is parsed (`start == 0`, `i - start < 9`, `at >= 0`), or change the
+rule that keeps a book link only when its text is not empty and it is seen for the first time.
+
 ## Left to do before G2 passes
 
-1. Measure `hillside`, `fpb`, `build`, `rawstore` and `catalog_build`, and measure `triage` and
+1. Classify the `hillside` survivors; measure `fpb`, `build`, `rawstore` and `catalog_build`, and measure `triage` and
    `model` again.
 2. Load every report into `docs/quality/survivors.json` with `nim-muter-ledger sync`, classify each
    survivor, and run `nim-muter-ledger check docs/quality/survivors.json` until it exits 0.
