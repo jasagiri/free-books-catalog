@@ -44,13 +44,16 @@ suite "NCK-C catalog":
     check langOfFile("free-courses-fil.md") == "fil"
     check langOfFile("free-books-java.md") == "en"
     check langOfFile("free-programming-books-pt_BR.md") == "pt_BR"
+    check langOfFile("-ja.md") == "ja"
+    let hashOnly = parseList("books/x-en.md", "#\n* [a](http://a.example)\n")
+    check hashOnly.len == 1 and hashOnly[0].listings[0].section.len == 0
     let xs = parseList("books/x-en.md", "# A\n## B\n* [x](http://x.example)\n" &
       "###### F\n####### G\n* [y](http://y.example)\n### Q\n* [z](http://z.example)\n")
     check xs.len == 3
     check xs[0].listings[0].section == @["A", "B"]
     check xs[1].listings[0].section == @["A", "B", "F"]
     check xs[2].listings[0].section == @["A", "B", "Q"]
-    for bad in ["* [abc", "* [Title] https://e.org/x)", "* [A](https://a.example"]:
+    for bad in ["* [abc", "* [abc]", "* [Title] https://e.org/x)", "* [A](https://a.example"]:
       check not parseEntry(bad)[0]
     let (ok1, nested) = parseEntry("* [T](https://e.org) - A (CC BY (v4))")
     check ok1 and nested.licenses == @["CC BY (v4)"] and nested.authors == "A"

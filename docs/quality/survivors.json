@@ -7,8 +7,8 @@
       "mutator": "CVR",
       "original": "2000",
       "replacement": "2001",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04 states 2000 links per list; the test uses the constant, so pin the literal 2000 (2010 links give 2000 depth-2 sources)."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:BLR:39b13a32ead773f1:0",
@@ -17,8 +17,8 @@
       "mutator": "BLR",
       "original": "true",
       "replacement": "false",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04: hillside web links are followed; expandable(hillside web link) must be true."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:RVR:6a2a42be40797a37:0",
@@ -27,8 +27,8 @@
       "mutator": "RVR",
       "original": "return true",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04: same as above; also a hillside book page is not expandable."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:LOR:0bdf42df155fc060:0",
@@ -37,8 +37,8 @@
       "mutator": "LOR",
       "original": "l.origin == oFpb and l.depth == 1",
       "replacement": "<and -> or>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04: a depth-2 fpb listing whose parent title mentions Meta-List is no meta-list entry; its notFollowedReason is empty."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:LOR:911720bac0f18b56:0",
@@ -47,8 +47,8 @@
       "mutator": "LOR",
       "original": "l.origin == oFpb and l.depth == 1 and isMetaListing(l)",
       "replacement": "<and -> or>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04: an ordinary fpb entry and the followed GitHub meta-list have an empty notFollowedReason."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:LOR:bcc7bbe118817c76:0",
@@ -57,8 +57,8 @@
       "mutator": "LOR",
       "original": "l.origin == oFpb and l.depth == 1 and isMetaListing(l) and not expandable(s)",
       "replacement": "<and -> or>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04: only other meta-lists are recorded; assemble over ordinary sources records none."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:RVR:56f516c7d5b9ce54:0",
@@ -67,8 +67,8 @@
       "mutator": "RVR",
       "original": "return \"\"",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The default string equals the literal \"\"."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:SDL:0f2656fd5164264b:0",
@@ -77,8 +77,8 @@
       "mutator": "SDL",
       "original": "section.add validUtf8(h)",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-01/FBC-06: a listing's heading path appears in sources.jsonl (listings[0].section)."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:0505ab0d4aff165f:0",
@@ -87,8 +87,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "unreached",
+      "reason": "via is empty or a 16-hex-digit list id, so len > 1 and len > 0 agree on every value the build can hold."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:ROR:d519a2344ebb75f2:0",
@@ -97,8 +97,8 @@
       "mutator": "ROR",
       "original": "l.via.len > 0",
       "replacement": "<> -> >=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "sources.jsonl fields are not specified: are empty optional keys omitted (recommended: yes, as for licenses), and which keys exist? (FBC-06 schema)"
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:ebe954c49597e8e6:0",
@@ -107,8 +107,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-01: one-character authors ('- A') appear in sources.jsonl."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:ROR:b200829a756a5e7a:0",
@@ -117,8 +117,8 @@
       "mutator": "ROR",
       "original": "s.authors.len > 0",
       "replacement": "<> -> >=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "sources.jsonl fields are not specified: are empty optional keys omitted (recommended: yes, as for licenses), and which keys exist? (FBC-06 schema)"
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:e8434a660e2bc96e:0",
@@ -127,8 +127,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-01: a single format '(PDF)' appears in sources.jsonl."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:ROR:487f24980435ca92:0",
@@ -137,8 +137,8 @@
       "mutator": "ROR",
       "original": "s.formats.len > 0",
       "replacement": "<> -> >=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "sources.jsonl fields are not specified: are empty optional keys omitted (recommended: yes, as for licenses), and which keys exist? (FBC-06 schema)"
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:1e92ecaa66c20461:0",
@@ -147,8 +147,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-08: a single licence ['MIT'] appears in sources.jsonl."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:BLR:3c3d17edd5385995:0",
@@ -157,8 +157,8 @@
       "mutator": "BLR",
       "original": "true",
       "replacement": "false",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-01: an archived entry has archived true in sources.jsonl."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:7b2ead4c3e50601f:0",
@@ -167,8 +167,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "unreached",
+      "reason": "Reach codes are 0 or an HTTP status of 100 or more (catalog_fetch), so code 1 never occurs."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:ROR:c08d836607027ecb:0",
@@ -177,8 +177,8 @@
       "mutator": "ROR",
       "original": "r.code != 0",
       "replacement": "<!= -> ==>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Are reach, httpCode and finalUrl part of sources.jsonl (recommended: yes; httpCode only when non-zero, finalUrl only when it differs)?"
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:606b2e1e7d46a88e:0",
@@ -187,8 +187,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "unreached",
+      "reason": "finalUrl is set only to a URL different from the source, at least 8 characters, so len > 1 and len > 0 agree."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:ROR:1f7a2b779e9c685b:0",
@@ -197,8 +197,8 @@
       "mutator": "ROR",
       "original": "r.final.len > 0",
       "replacement": "<> -> >=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Are reach, httpCode and finalUrl part of sources.jsonl (recommended: yes; httpCode only when non-zero, finalUrl only when it differs)?"
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:SDL:5e069b302cd54369:0",
@@ -207,8 +207,8 @@
       "mutator": "SDL",
       "original": "ls.add toJson(l)",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04/FBC-06: a depth-2 source's listing (depth, via, file) appears in sources.jsonl."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:BLR:3c1f58cd730b717e:0",
@@ -217,8 +217,8 @@
       "mutator": "BLR",
       "original": "false",
       "replacement": "true",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Which free-programming-books files are lists? Recommended: only .md files under books/, courses/, more/ and casts/ (FBC-01)."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:LOR:99fd2c94c0afd2a5:0",
@@ -227,8 +227,8 @@
       "mutator": "LOR",
       "original": "listed and path.endsWith(\".md\")",
       "replacement": "<and -> or>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Which free-programming-books files are lists? Recommended: only .md files under books/, courses/, more/ and casts/ (FBC-01)."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:af4ed857360d0960:0",
@@ -237,8 +237,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "unreached",
+      "reason": "A redirect target from the fetcher is a URL of at least 8 characters, so len > 1 and len > 0 agree."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:ROR:9ea5a9b139f363e7:0",
@@ -247,8 +247,8 @@
       "mutator": "ROR",
       "original": "target.len > 0",
       "replacement": "<> -> >=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-03: a web link without a known redirect keeps weblinkUrl(id)."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:5c7249082434e6fc:0",
@@ -257,8 +257,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04/05: a hillside web link is a depth-1 listing of origin hillside."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:0fd5b826870eca66:0",
@@ -267,8 +267,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-03/05: a hillside book page is a depth-1 listing."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:bd2c7ed659cdd8e3:0",
@@ -277,8 +277,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-08: a listed source is depth 1."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:05a50d9069825a52:0",
@@ -287,8 +287,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04: an expansion link with one-character text ('C') becomes a depth-2 source."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:LOR:26783140b7784f04:0",
@@ -297,8 +297,8 @@
       "mutator": "LOR",
       "original": "not isWebLink(a.href) or a.text.len == 0",
       "replacement": "<or -> and>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Which expansion links are kept? Recommended: only http(s) links with text (current behaviour), stated in FBC-04."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:SDL:816acd334a674408:0",
@@ -307,8 +307,8 @@
       "mutator": "SDL",
       "original": "classes[rel].add id",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-05/06: triage.json lists every source id under its class."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:2afb48b0502f89d0:0",
@@ -317,8 +317,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Are the meta.json counts, depthLimit and maxLinksPerExpansion specified? Recommended: they equal the real numbers (2 and 2000), stated in FBC-04/06."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:2a683e8b05b44392:0",
@@ -327,8 +327,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Are the meta.json counts, depthLimit and maxLinksPerExpansion specified? Recommended: they equal the real numbers (2 and 2000), stated in FBC-04/06."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:9216af0b1ea931c5:0",
@@ -337,8 +337,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "why is '' or a fixed message of 50+ characters, so len > 1 and len > 0 agree."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:ROR:af209a1863e01a9a:0",
@@ -347,8 +347,8 @@
       "mutator": "ROR",
       "original": "why.len > 0",
       "replacement": "<> -> >=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04: assemble over ordinary sources has no notFollowed entry."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:SDL:1da4aafd94f61287:0",
@@ -357,8 +357,8 @@
       "mutator": "SDL",
       "original": "result.notFollowed.add (id, why)",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04: assemble with a non-GitHub meta-list records it in notFollowed with its reason."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:SDL:240ea888980d34ef:0",
@@ -367,8 +367,8 @@
       "mutator": "SDL",
       "original": "countKeys.add k",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Are the meta.json counts, depthLimit and maxLinksPerExpansion specified? Recommended: they equal the real numbers (2 and 2000), stated in FBC-04/06."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:SDL:bdfb6eb33286c7c9:0",
@@ -377,8 +377,8 @@
       "mutator": "SDL",
       "original": "nf.add %*{\"id\": id, \"reason\": why}",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-04: meta.json notFollowed holds the id and reason of the non-GitHub meta-list."
     },
     {
       "fingerprint": "src/free_books_catalog/build.nim:CVR:81721407dd688827:0",
@@ -387,8 +387,8 @@
       "mutator": "CVR",
       "original": "2",
       "replacement": "3",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Are the meta.json counts, depthLimit and maxLinksPerExpansion specified? Recommended: they equal the real numbers (2 and 2000), stated in FBC-04/06."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:CVR:4b6c43116f14f42a:0",
@@ -397,8 +397,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-01: the language is the part after the last '-', so langOfFile(\"-ja.md\") must be \"ja\"; the mutant (dash < 1) gives \"en\"."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:ROR:9f566e29e86c65de:0",
@@ -407,8 +407,8 @@
       "mutator": "ROR",
       "original": "dash < 0",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-01: same input, langOfFile(\"-ja.md\") == \"ja\"; dash <= 0 treats the leading dash as no dash."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:ROR:ac67647651c4614b:0",
@@ -417,8 +417,8 @@
       "mutator": "ROR",
       "original": "level >= line.len",
       "replacement": "<>= -> >>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-01: a line of only '#' is not a heading; parseList(\"books/x-en.md\", \"#\\n* [a](http://a.example)\") gives one source with an empty section, while the mutant reads past the end."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:RVR:c4d6f0f36917f1df:0",
@@ -427,8 +427,8 @@
       "mutator": "RVR",
       "original": "return (0, \"\")",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The default value of the tuple equals the literal the original returns."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:AOR:ce6cafad98476fd4:0",
@@ -437,8 +437,8 @@
       "mutator": "AOR",
       "original": "i + 1",
       "replacement": "<+ -> ->",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "i - 1 < len is always true; it differs only for a trailing backslash, after which no ']' can follow, and both return the empty link."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:CVR:94eecaa147dc634e:0",
@@ -447,8 +447,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "Differs only for a backslash at len-2; a final ']' then gives i == len-1, which the next check rejects as well, so both return the empty link."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:ROR:bb2b00762413bf81:0",
@@ -457,8 +457,8 @@
       "mutator": "ROR",
       "original": "i + 1 < line.len",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "i + 1 <= len differs only for a trailing backslash; no closing ']' follows and both return the empty link."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:CVR:a1fd2673ee54ea05:0",
@@ -467,8 +467,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "Differs only when ']' is second-last; the original then reaches the url scan with j == len and returns the same empty link."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:ROR:d35fe81b36a88e88:0",
@@ -477,8 +477,8 @@
       "mutator": "ROR",
       "original": "i >= line.len - 1",
       "replacement": "<>= -> >>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-01: a link without its (url) is not an entry; parseEntry(\"* [abc]\") is false, while the mutant reads line[len]."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:RVR:0c80abc33a809acb:0",
@@ -487,8 +487,8 @@
       "mutator": "RVR",
       "original": "return (\"\", \"\", start)",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "Both return an empty url; the only caller rejects it before reading the index."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:CVR:229822758e13142a:0",
@@ -497,8 +497,8 @@
       "mutator": "CVR",
       "original": "2",
       "replacement": "3",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "An accepted url starts with 'h', which is not a parenthesis; a url starting with a parenthesis is rejected either way."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:RVR:0c80abc33a809acb:1",
@@ -507,8 +507,8 @@
       "mutator": "RVR",
       "original": "return (\"\", \"\", start)",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "Both return an empty url; the only caller rejects it before reading the index."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:ROR:483dbfe958467c94:0",
@@ -517,8 +517,8 @@
       "mutator": "ROR",
       "original": "parts.len > 0",
       "replacement": "<> -> >=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "split never returns an empty seq, so parts.len > 0 and >= 0 are both always true."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:CVR:d5b03997d0def736:0",
@@ -527,8 +527,8 @@
       "mutator": "CVR",
       "original": "4",
       "replacement": "5",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "No line of four characters can hold '* [' plus '](' plus an http url, so it is rejected later anyway."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:ROR:e0004a0b0a38173e:0",
@@ -537,8 +537,8 @@
       "mutator": "ROR",
       "original": "t.len < 4",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "t.len <= 4 is the same set as t.len < 5."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:RVR:fe82553c0b45671b:0",
@@ -547,8 +547,8 @@
       "mutator": "RVR",
       "original": "return (false, Source())",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The default value of the tuple equals the literal the original returns."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:CVR:267d1ec7d1b3073d:0",
@@ -557,8 +557,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "An empty or one-character url fails the http check that follows, so the result is the same."
     },
     {
       "fingerprint": "src/free_books_catalog/fpb.nim:RVR:fe82553c0b45671b:1",
@@ -567,8 +567,8 @@
       "mutator": "RVR",
       "original": "return (false, Source())",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The default value of the tuple equals the literal the original returns."
     },
     {
       "fingerprint": "src/free_books_catalog/hillside.nim:CVR:58b8479c6230bbfe:0",
@@ -577,8 +577,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "Differs only at result == 0, where 0 * 10 and 0 are equal."
     },
     {
       "fingerprint": "src/free_books_catalog/hillside.nim:ROR:aea7e21031292332:0",
@@ -587,8 +587,8 @@
       "mutator": "ROR",
       "original": "result < 0",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "Differs only at result == 0, where 0 * 10 and 0 are equal."
     },
     {
       "fingerprint": "src/free_books_catalog/hillside.nim:CVR:18a573c5fe0ff1ad:0",
@@ -597,8 +597,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The marker is never at index 0: htmlAnchors makes every href absolute against a non-empty base (parseUri never raises), so it starts with a scheme and host."
     },
     {
       "fingerprint": "src/free_books_catalog/hillside.nim:ROR:bc7d3f515c3dea3a:0",
@@ -607,8 +607,8 @@
       "mutator": "ROR",
       "original": "at >= 0",
       "replacement": "<>= -> >>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The marker is never at index 0: htmlAnchors makes every href absolute against a non-empty base (parseUri never raises), so it starts with a scheme and host."
     },
     {
       "fingerprint": "src/free_books_catalog/hillside.nim:CVR:68532dcea36e8526:0",
@@ -617,8 +617,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The marker is never at index 0: htmlAnchors makes every href absolute against a non-empty base (parseUri never raises), so it starts with a scheme and host."
     },
     {
       "fingerprint": "src/free_books_catalog/hillside.nim:ROR:8c3b78686d8d146e:0",
@@ -627,8 +627,8 @@
       "mutator": "ROR",
       "original": "s >= 0",
       "replacement": "<>= -> >>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The marker is never at index 0: htmlAnchors makes every href absolute against a non-empty base (parseUri never raises), so it starts with a scheme and host."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:BLR:7379ce486261d8cc:0",
@@ -637,8 +637,8 @@
       "mutator": "BLR",
       "original": "true",
       "replacement": "false",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "A leading space added by the other initial value is removed by the final strip."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:e3befe4a7cd84a5f:0",
@@ -647,8 +647,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: a relative href is resolved against a non-empty base; base '/' must not be treated as empty (markdownAnchors(\"[a](b)\", \"/\"))."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:LOR:10885b2816573f40:0",
@@ -657,8 +657,8 @@
       "mutator": "LOR",
       "original": "base.len == 0 or href.startsWith(\"http://\")",
       "replacement": "<or -> and>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: an absolute href is kept as written even with a base; to be pinned with an href std/uri would rewrite (e.g. a trailing '?'), checked by running."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:LOR:86e7794d83e8d2ed:0",
@@ -667,8 +667,8 @@
       "mutator": "LOR",
       "original": "base.len == 0 or href.startsWith(\"http://\") or href.startsWith(\"https://\")",
       "replacement": "<or -> and>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: with an empty base the href is kept as written; same input as above with base ''."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:a1f7b5dbe45dbcb8:0",
@@ -677,8 +677,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:a59382d0fcf010d0:0",
@@ -687,8 +687,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:ROR:062d5100680c1716:0",
@@ -697,8 +697,8 @@
       "mutator": "ROR",
       "original": "i < 0",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:RVR:9735eb8ac6857a50:0",
@@ -707,8 +707,8 @@
       "mutator": "RVR",
       "original": "return \"\"",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The default value equals the literal returned."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:f36d8e7ed2b7627b:0",
@@ -717,8 +717,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "unreached",
+      "reason": "The tag always starts with '<a', so 'href=' is never at index 0 and the i == 0 branch cannot run."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:ROR:b57a5611c7360aee:0",
@@ -727,8 +727,8 @@
       "mutator": "ROR",
       "original": "j >= tag.len",
       "replacement": "<>= -> >>",
-      "class": "undecided",
-      "reason": ""
+      "class": "unreached",
+      "reason": "The tag always ends with '>', and 'href=' ends with '=', so j never reaches tag.len."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:RVR:039b92c9dbd8c487:0",
@@ -737,8 +737,8 @@
       "mutator": "RVR",
       "original": "return \"\"",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "unreached",
+      "reason": "Behind the j >= tag.len guard, which no input satisfies."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:9090ab80ff5fbcfa:0",
@@ -747,8 +747,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: an empty href is no link; <a href=\"\" class=\"c\">E</a> gives no anchor."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:1010b7aae5686e62:0",
@@ -757,8 +757,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:ROR:3be93cca3aeb742a:0",
@@ -767,8 +767,8 @@
       "mutator": "ROR",
       "original": "k < 0",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:RVR:01b32064aefdd7e2:0",
@@ -777,8 +777,8 @@
       "mutator": "RVR",
       "original": "return \"\"",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The default value equals the literal returned."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:ROR:04f1244447bf18d0:0",
@@ -787,8 +787,8 @@
       "mutator": "ROR",
       "original": "k < tag.len",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The unquoted scan stops at '>' before k reaches tag.len, since the tag ends with '>'."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:d26e77565300e78c:0",
@@ -797,8 +797,8 @@
       "mutator": "CVR",
       "original": "2",
       "replacement": "3",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "With one character after '<a' there is no room for '</a', so neither version adds an anchor."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:f7831d04ddbd3b8b:0",
@@ -807,8 +807,8 @@
       "mutator": "CVR",
       "original": "2",
       "replacement": "3",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: <a<a href=\"/y\">Y</a> must still give the anchor /y."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:be7e1e638f0753a0:0",
@@ -817,8 +817,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:ROR:9c3d4d440e4ef7cf:0",
@@ -827,8 +827,8 @@
       "mutator": "ROR",
       "original": "close < 0",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:b171946490715907:0",
@@ -837,8 +837,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:ROR:584f1126932eb5e5:0",
@@ -847,8 +847,8 @@
       "mutator": "ROR",
       "original": "endTag < 0",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:LBR:6e0f9dc776e2811d:0",
@@ -857,8 +857,8 @@
       "mutator": "LBR",
       "original": "i .. close",
       "replacement": "<.. -> ..<>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "Dropping the final '>' does not change attrValue: the value scan stops at '>' anyway."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:LBR:9b29072fb72239b1:0",
@@ -867,8 +867,8 @@
       "mutator": "LBR",
       "original": "close + 1 ..< endTag",
       "replacement": "<..< -> ..>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The extra '<' starts a tag in stripTags, so nothing more is added to the text."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:43c7c0181b0d4da0:0",
@@ -877,8 +877,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: a one-character href is not empty; <a href=\"/\">Home</a> gives an anchor."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:AOR:c1221c07486620aa:0",
@@ -887,8 +887,8 @@
       "mutator": "AOR",
       "original": "endTag + 3",
       "replacement": "<+ -> ->",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: <a></a><a href=\"/y\">Y</a> ends and gives the anchor /y."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:b8745210fc7f2416:0",
@@ -897,8 +897,8 @@
       "mutator": "CVR",
       "original": "3",
       "replacement": "4",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: <a href=\"/1\">X</a<a href=\"/2\">Y</a> keeps the anchor /2."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:be7e1e638f0753a0:1",
@@ -907,8 +907,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:ROR:9c3d4d440e4ef7cf:1",
@@ -917,8 +917,8 @@
       "mutator": "ROR",
       "original": "close < 0",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:eed0a4a341360387:0",
@@ -927,8 +927,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:ROR:baa8182e562934ac:0",
@@ -937,8 +937,8 @@
       "mutator": "ROR",
       "original": "nl < close",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The character at close is ']', so nl never equals close."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:ROR:ce9c0a0f09adc907:0",
@@ -947,8 +947,8 @@
       "mutator": "ROR",
       "original": "nl >= 0",
       "replacement": "<>= -> >>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:1325fb46673cbd05:0",
@@ -957,8 +957,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "A '[' at open+1 has the same close and newline, so it is skipped for the same reason."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:AOR:0442d8ede61ac2be:0",
@@ -967,8 +967,8 @@
       "mutator": "AOR",
       "original": "close + 2",
       "replacement": "<+ -> ->",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: [Book (2nd ed.)](https://x.example/b) keeps its text and URL."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:5f0b737264c5c6c3:0",
@@ -977,8 +977,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:ROR:af81dabb528673eb:0",
@@ -987,8 +987,8 @@
       "mutator": "ROR",
       "original": "stop < 0",
       "replacement": "<< -> <=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "The match is never at index 0 here (the text searched starts with '<a', '[' or an absolute URL), so the boundary change gives the same result."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:AOR:2bdf2bb840d6de71:0",
@@ -997,8 +997,8 @@
       "mutator": "AOR",
       "original": "stop + 1",
       "replacement": "<+ -> ->",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: [a](u[)](v) gives the one link u[."
     },
     {
       "fingerprint": "src/free_books_catalog/links.nim:CVR:6cdf076b7dc88751:0",
@@ -1007,8 +1007,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-11: [a](u)[b](v) gives both links."
     },
     {
       "fingerprint": "src/free_books_catalog/model.nim:RVR:3199bc46e9128339:0",
@@ -1077,8 +1077,8 @@
       "mutator": "SDL",
       "original": "stderr.writeLine \"catalog_build: unknown option --\" & key",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Usage errors (unknown option, stray argument) exit 2 with a message naming them: stated only in the header comment; recommended as a spec row with an E test."
     },
     {
       "fingerprint": "tools/catalog_build.nim:CVR:0a1241261a40aa9e:0",
@@ -1087,8 +1087,8 @@
       "mutator": "CVR",
       "original": "2",
       "replacement": "3",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Usage errors (unknown option, stray argument) exit 2 with a message naming them: stated only in the header comment; recommended as a spec row with an E test."
     },
     {
       "fingerprint": "tools/catalog_build.nim:RVR:9d20bb3045c63a3f:0",
@@ -1097,8 +1097,8 @@
       "mutator": "RVR",
       "original": "return 2",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Usage errors (unknown option, stray argument) exit 2 with a message naming them: stated only in the header comment; recommended as a spec row with an E test."
     },
     {
       "fingerprint": "tools/catalog_build.nim:SDL:428063726bf02058:0",
@@ -1107,8 +1107,8 @@
       "mutator": "SDL",
       "original": "stderr.writeLine \"catalog_build: unexpected argument \" & key",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Usage errors (unknown option, stray argument) exit 2 with a message naming them: stated only in the header comment; recommended as a spec row with an E test."
     },
     {
       "fingerprint": "tools/catalog_build.nim:CVR:0a1241261a40aa9e:1",
@@ -1117,8 +1117,8 @@
       "mutator": "CVR",
       "original": "2",
       "replacement": "3",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Usage errors (unknown option, stray argument) exit 2 with a message naming them: stated only in the header comment; recommended as a spec row with an E test."
     },
     {
       "fingerprint": "tools/catalog_build.nim:RVR:9d20bb3045c63a3f:1",
@@ -1127,8 +1127,8 @@
       "mutator": "RVR",
       "original": "return 2",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Usage errors (unknown option, stray argument) exit 2 with a message naming them: stated only in the header comment; recommended as a spec row with an E test."
     },
     {
       "fingerprint": "tools/catalog_build.nim:CVR:b6c97b7c415ecbdd:0",
@@ -1137,8 +1137,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-09: without --raw the build reads the configured raw location (environment override); no test runs without --raw."
     },
     {
       "fingerprint": "tools/catalog_build.nim:ROR:d9adff1b8945e00a:0",
@@ -1147,8 +1147,8 @@
       "mutator": "ROR",
       "original": "raw.len == 0",
       "replacement": "<== -> !=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-09: --raw wins over the configured location; same test."
     },
     {
       "fingerprint": "tools/catalog_build.nim:SDL:20a7d0345ae649ed:0",
@@ -1157,8 +1157,8 @@
       "mutator": "SDL",
       "original": "stderr.writeLine \"catalog_build: \" & raw &; \"/fpb is missing; run catalog_fetch fpb first\"",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "An incomplete raw/ (fpb on, no raw/fpb) exits 1 with a message and writes nothing: header only; recommended as a spec row."
     },
     {
       "fingerprint": "tools/catalog_build.nim:CVR:fd8209c25119250f:0",
@@ -1167,8 +1167,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "An incomplete raw/ (fpb on, no raw/fpb) exits 1 with a message and writes nothing: header only; recommended as a spec row."
     },
     {
       "fingerprint": "tools/catalog_build.nim:RVR:3b0f06f1d6c25251:0",
@@ -1177,8 +1177,8 @@
       "mutator": "RVR",
       "original": "return 1",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "An incomplete raw/ (fpb on, no raw/fpb) exits 1 with a message and writes nothing: header only; recommended as a spec row."
     },
     {
       "fingerprint": "tools/catalog_build.nim:LOR:4be5031c1b64bbcf:0",
@@ -1187,8 +1187,8 @@
       "mutator": "LOR",
       "original": "config.fpb and inputs.fpbCommit != config.fpbCommit",
       "replacement": "<and -> or>",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-09: with fpb off the pinned commit is not checked; a differing manifest commit still builds."
     },
     {
       "fingerprint": "tools/catalog_build.nim:ROR:c51772d562a44ea4:0",
@@ -1197,8 +1197,8 @@
       "mutator": "ROR",
       "original": "inputs.fpbCommit != config.fpbCommit",
       "replacement": "<!= -> ==>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "With fpb on, a manifest commit that differs from the pin exits 1 naming both and writes nothing: only the fpb-off case is in FBC-09; recommended as a row."
     },
     {
       "fingerprint": "tools/catalog_build.nim:SDL:f4fc0833aa44c395:0",
@@ -1207,8 +1207,8 @@
       "mutator": "SDL",
       "original": "stderr.writeLine \"catalog_build: \" & raw & \"/manifest.json has fpb commit \\'\" &; inputs.fpbCommit &; \"\\', the config pins \\'\" &; config.fpbCommit &; \"\\'; run catalog_fetch fpb\"",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "With fpb on, a manifest commit that differs from the pin exits 1 naming both and writes nothing: only the fpb-off case is in FBC-09; recommended as a row."
     },
     {
       "fingerprint": "tools/catalog_build.nim:CVR:fd8209c25119250f:1",
@@ -1217,8 +1217,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "With fpb on, a manifest commit that differs from the pin exits 1 naming both and writes nothing: only the fpb-off case is in FBC-09; recommended as a row."
     },
     {
       "fingerprint": "tools/catalog_build.nim:RVR:3b0f06f1d6c25251:1",
@@ -1227,8 +1227,8 @@
       "mutator": "RVR",
       "original": "return 1",
       "replacement": "<return default>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "With fpb on, a manifest commit that differs from the pin exits 1 naming both and writes nothing: only the fpb-off case is in FBC-09; recommended as a row."
     },
     {
       "fingerprint": "tools/catalog_build.nim:SDL:b2111d807782950c:0",
@@ -1237,8 +1237,8 @@
       "mutator": "SDL",
       "original": "createDir(outDir)",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Does --out create its directory? No spec row mentions --out; recommended as a row with an E test."
     },
     {
       "fingerprint": "tools/catalog_build.nim:SDL:2cdb1a34a43f56bc:0",
@@ -1247,8 +1247,8 @@
       "mutator": "SDL",
       "original": "writeFile(outDir / \"meta.json\", output.metaJson)",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-06/10: a successful build writes meta.json."
     },
     {
       "fingerprint": "tools/catalog_build.nim:SDL:ea590554be37c3bc:0",
@@ -1257,8 +1257,8 @@
       "mutator": "SDL",
       "original": "writeFile(outDir / \"triage.json\", output.triageJson)",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-06/10: a successful build writes triage.json, and a refused one writes neither."
     },
     {
       "fingerprint": "tools/catalog_build.nim:SDL:5dd3fe0cf32a9828:0",
@@ -1267,8 +1267,8 @@
       "mutator": "SDL",
       "original": "echo \"catalog_build: \", output.sources.len, \" sources → \", outDir",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "accepted",
+      "reason": "Only the summary line on stdout for people; no consumer parses it and the catalog is unchanged."
     },
     {
       "fingerprint": "tools/rawstore.nim:BLR:6ee1131c7a6693bf:0",
@@ -1277,8 +1277,8 @@
       "mutator": "BLR",
       "original": "false",
       "replacement": "true",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The default of the optional hillsideCore key is not stated; recommended: optional, default false, in FBC-09."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:26e8e85d56f847d0:0",
@@ -1287,8 +1287,8 @@
       "mutator": "SDL",
       "original": "result.expansions.add (e{\"listId\"}.getStr, e{\"base\"}.getStr,; e{\"markdown\"}.getBool, e{\"file\"}.getStr)",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The manifest (fetched state carried into the build) has no spec row and no test runs saveManifest/loadManifest; recommended: a round-trip row (every field, expansions included)."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:0d16e30c05d801f2:0",
@@ -1297,8 +1297,8 @@
       "mutator": "SDL",
       "original": "ids.add k",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The manifest (fetched state carried into the build) has no spec row and no test runs saveManifest/loadManifest; recommended: a round-trip row (every field, expansions included)."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:b30fdd4730d07b0e:0",
@@ -1307,8 +1307,8 @@
       "mutator": "SDL",
       "original": "keys.add k",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The manifest (fetched state carried into the build) has no spec row and no test runs saveManifest/loadManifest; recommended: a round-trip row (every field, expansions included)."
     },
     {
       "fingerprint": "tools/rawstore.nim:CVR:eb4ab0e89d815c6f:0",
@@ -1317,8 +1317,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The manifest (fetched state carried into the build) has no spec row and no test runs saveManifest/loadManifest; recommended: a round-trip row (every field, expansions included)."
     },
     {
       "fingerprint": "tools/rawstore.nim:ROR:3292352a6b35cee3:0",
@@ -1327,8 +1327,8 @@
       "mutator": "ROR",
       "original": "r.code != 0",
       "replacement": "<!= -> ==>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The manifest (fetched state carried into the build) has no spec row and no test runs saveManifest/loadManifest; recommended: a round-trip row (every field, expansions included)."
     },
     {
       "fingerprint": "tools/rawstore.nim:CVR:369ac3d8f17288a8:0",
@@ -1337,8 +1337,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The manifest (fetched state carried into the build) has no spec row and no test runs saveManifest/loadManifest; recommended: a round-trip row (every field, expansions included)."
     },
     {
       "fingerprint": "tools/rawstore.nim:ROR:813a32ded2595b67:0",
@@ -1347,8 +1347,8 @@
       "mutator": "ROR",
       "original": "r.final.len > 0",
       "replacement": "<> -> >=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "accepted",
+      "reason": "An empty final is written as \"\" and read back as empty, the same as a missing key; only the cache file's bytes differ."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:f375803c91feb26c:0",
@@ -1357,8 +1357,8 @@
       "mutator": "SDL",
       "original": "exps.add %*{\"listId\": id, \"base\": base, \"markdown\": md, \"file\": file}",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The manifest (fetched state carried into the build) has no spec row and no test runs saveManifest/loadManifest; recommended: a round-trip row (every field, expansions included)."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:35d04027dd6fc5cc:0",
@@ -1367,8 +1367,8 @@
       "mutator": "SDL",
       "original": "writeFile(raw / ManifestName, j.pretty & \"\\n\")",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The manifest (fetched state carried into the build) has no spec row and no test runs saveManifest/loadManifest; recommended: a round-trip row (every field, expansions included)."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:07baed4cd49741f3:0",
@@ -1377,8 +1377,8 @@
       "mutator": "SDL",
       "original": "files.add f",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-09: with fpb on, raw/fpb/{books,courses,more,casts}/*.md are read; no test builds with fpb on."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:43de2294faf6bdb8:0",
@@ -1387,8 +1387,8 @@
       "mutator": "SDL",
       "original": "result.fpbFiles.add (f.relativePath(fpbRoot), readFile(f))",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-09: same test; the file contents reach the build with the relative path as the listing file."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:6008c605de244b38:0",
@@ -1397,8 +1397,8 @@
       "mutator": "SDL",
       "original": "pages.add f",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-09: with hillside on, raw/hillside/catalog-*.html are read."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:1bd722797a3f380e:0",
@@ -1407,8 +1407,8 @@
       "mutator": "SDL",
       "original": "result.catalogPages.add readFile(f)",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-09: same test; the catalog pages reach the build."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:541e84da2c29ea03:0",
@@ -1417,8 +1417,8 @@
       "mutator": "SDL",
       "original": "books.add f",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-09: with hillside on, raw/hillside/books-*.html are read."
     },
     {
       "fingerprint": "tools/rawstore.nim:CVR:1d704a29be703e78:0",
@@ -1427,8 +1427,8 @@
       "mutator": "CVR",
       "original": "1",
       "replacement": "2",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The book category comes from the books-<category>.html file name (header only); recommended as a raw/ layout row."
     },
     {
       "fingerprint": "tools/rawstore.nim:LBR:0989840599827606:0",
@@ -1437,8 +1437,8 @@
       "mutator": "LBR",
       "original": "\"books-\".len .. ^1",
       "replacement": "<.. -> ..<>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "Same raw/ layout question: the category from the file name."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:f81be72f45f428f8:0",
@@ -1447,8 +1447,8 @@
       "mutator": "SDL",
       "original": "result.bookPages.add (cat, readFile(f))",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "test_owed",
+      "reason": "FBC-09: same hillside test; the books pages reach the build."
     },
     {
       "fingerprint": "tools/rawstore.nim:CVR:cdbca4f91551cd30:0",
@@ -1457,8 +1457,8 @@
       "mutator": "CVR",
       "original": "0",
       "replacement": "1",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The manifest (fetched state carried into the build) has no spec row and no test runs saveManifest/loadManifest; recommended: a round-trip row (every field, expansions included)."
     },
     {
       "fingerprint": "tools/rawstore.nim:LOR:165c912e9dc49dae:0",
@@ -1467,8 +1467,8 @@
       "mutator": "LOR",
       "original": "file.len > 0 and fileExists(raw / file)",
       "replacement": "<and -> or>",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "A manifest expansion whose file is missing: skipped or an error? Recommended: an error naming the file (errors are not hidden)."
     },
     {
       "fingerprint": "tools/rawstore.nim:ROR:d2e45b136bbff85e:0",
@@ -1477,8 +1477,8 @@
       "mutator": "ROR",
       "original": "file.len > 0",
       "replacement": "<> -> >=>",
-      "class": "undecided",
-      "reason": ""
+      "class": "equivalent",
+      "reason": "An empty file name gives fileExists(raw), which is false for a directory, so the entry is skipped as before."
     },
     {
       "fingerprint": "tools/rawstore.nim:SDL:525a3e8bd75ef9b8:0",
@@ -1487,8 +1487,8 @@
       "mutator": "SDL",
       "original": "result.expansions.add Expansion(listId: id, base: base, markdown: md,; body: readFile(raw / file))",
       "replacement": "discard",
-      "class": "undecided",
-      "reason": ""
+      "class": "spec_question",
+      "reason": "The manifest (fetched state carried into the build) has no spec row and no test runs saveManifest/loadManifest; recommended: a round-trip row (every field, expansions included)."
     }
   ]
 }
