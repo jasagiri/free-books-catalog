@@ -138,8 +138,12 @@ proc readInputs*(raw: string; c: CatalogConfig): BuildInputs {.raises: [IOError,
     let cat = f.extractFilename.changeFileExt("")["books-".len .. ^1]
     result.bookPages.add (cat, readFile(f))
   for (id, base, md, file) in m.expansions:
-    if file.len > 0 and fileExists(raw / file):
-      result.expansions.add Expansion(listId: id, base: base, markdown: md, body: readFile(raw / file))
+    # An empty file name is a fetch that failed (its reach is in the manifest); a named file that is
+    # gone means raw/ is broken, and building without it would silently drop a list (FBC-14).
+    if file.len == 0: continue
+    if not fileExists(raw / file):
+      raise newException(IOError, raw / file & ": named in " & ManifestName & " but missing")
+    result.expansions.add Expansion(listId: id, base: base, markdown: md, body: readFile(raw / file))
   if fileExists(overridesFile):
     let j = try: parseJson(readFile(overridesFile))
             except JsonParsingError as e: raise newException(ValueError, overridesFile & ": " & e.msg)
