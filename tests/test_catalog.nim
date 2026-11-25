@@ -382,6 +382,9 @@ suite "FBC-11 links":
     check htmlAnchors("""<a<a href="/y">Y</a>""", base) == @[Anchor(href: "https://h.example/y", text: "Y")]
     check htmlAnchors("""<a href="/">Home</a>""", base) == @[Anchor(href: "https://h.example/", text: "Home")]
     check htmlAnchors("""<a></a><a href="/y">Y</a>""", base) == @[Anchor(href: "https://h.example/y", text: "Y")]
+    # the scan goes on after "</a", not from inside the text: a "<a " ending the text is no anchor
+    check htmlAnchors("""<a href="/x">X<a </a><a href="/y">Y</a>""", base) == @[
+      Anchor(href: "https://h.example/x", text: "X"), Anchor(href: "https://h.example/y", text: "Y")]
     check htmlAnchors("""<a href="/1">X</a<a href="/2">Y</a>""", base) == @[
       Anchor(href: "https://h.example/1", text: "X"), Anchor(href: "https://h.example/2", text: "Y")]
 
