@@ -10,19 +10,22 @@ Also from the IDs in the first cell of the table rows of
 
 | ID | test files (count) |
 |---|---|
-| FBC-01 | tests/test_catalog.nim (3) |
+| FBC-01 | tests/test_catalog.nim (4) |
 | FBC-02 | tests/test_catalog.nim (6) |
 | FBC-03 | tests/test_catalog.nim (3) |
-| FBC-04 | tests/test_catalog.nim (2) |
+| FBC-04 | tests/test_catalog.nim (5) |
 | FBC-05 | tests/test_catalog.nim (4) |
 | FBC-06 | tests/test_catalog.nim (2) |
 | FBC-07 | tests/test_catalog.nim (1) |
 | FBC-08 | tests/test_catalog.nim (2) |
-| FBC-09 | tests/test_config.nim (5) |
+| FBC-09 | tests/test_config.nim (6) |
 | FBC-10 | tests/test_build_tool.nim (3), tests/test_catalog.nim (1) |
-| FBC-11 | tests/test_catalog.nim (2) |
+| FBC-11 | tests/test_catalog.nim (5) |
+| FBC-12 | tests/test_catalog.nim (3) |
+| FBC-13 | tests/test_build_tool.nim (5) |
+| FBC-14 | tests/test_config.nim (3) |
 
-Declared: 11  Covered: 11  Uncovered: 0
+Declared: 14  Covered: 14  Uncovered: 0
 
 ## Uncovered declared IDs
 

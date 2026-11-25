@@ -195,14 +195,14 @@ suite "NCK-C catalog":
     for i in 0 ..< MaxLinksPerExpansion + 10: md.add "* [Pattern " & $i & "](https://p.example/" & $i & ")\n"
     inputs.expansions = @[Expansion(listId: listId, base: "https://github.com/o/r", markdown: true, body: md)]
     let o = assemble(inputs)
-    check o.sources.len == 1 + MaxLinksPerExpansion
+    check o.sources.len == 2001 # FBC-04 states 2000; the literal, not the constant
     var depth2 = 0
     for s in o.sources:
       for l in s.listings:
         if l.depth == 2:
           inc depth2
           check l.via == listId
-    check depth2 == MaxLinksPerExpansion
+    check depth2 == 2000
 
   # SPEC: FBC-05
   test "FBC-05 Given headings and titles, when classified, then keywords decide and short keywords match whole words only":
@@ -366,3 +366,159 @@ suite "FBC-11 links":
       Anchor(href: "https://m.example/d/c", text: "Three")]
     check markdownAnchors("[R](rel/p)", "") == @[Anchor(href: "rel/p", text: "R")]
     check markdownAnchors("no links [here", "https://m.example/").len == 0
+
+  # SPEC: FBC-11
+  test "FBC-11 Given a base of one character and absolute hrefs that std/uri would rewrite, when resolved, then relative hrefs use the base and absolute ones are kept as written":
+    check markdownAnchors("[a](b)", "/") == @[Anchor(href: "/b", text: "a")]
+    check absolute("https://b.example/", "http://x.example/a?") == "http://x.example/a?"
+    check absolute("https://b.example/", "https://x.example/a?") == "https://x.example/a?"
+    check absolute("", "http://x.example/a?") == "http://x.example/a?"
+    check absolute("", "https://x.example/a?") == "https://x.example/a?"
+
+  # SPEC: FBC-11
+  test "FBC-11 Given empty, one-character and adjacent HTML anchors, when scanned, then empty hrefs give nothing and no anchor is lost":
+    let base = "https://h.example/"
+    check htmlAnchors("""<a href="" class="c">E</a>""", base).len == 0
+    check htmlAnchors("""<a<a href="/y">Y</a>""", base) == @[Anchor(href: "https://h.example/y", text: "Y")]
+    check htmlAnchors("""<a href="/">Home</a>""", base) == @[Anchor(href: "https://h.example/", text: "Home")]
+    check htmlAnchors("""<a></a><a href="/y">Y</a>""", base) == @[Anchor(href: "https://h.example/y", text: "Y")]
+    check htmlAnchors("""<a href="/1">X</a<a href="/2">Y</a>""", base) == @[
+      Anchor(href: "https://h.example/1", text: "X"), Anchor(href: "https://h.example/2", text: "Y")]
+
+  # SPEC: FBC-11
+  test "FBC-11 Given Markdown links with parentheses in the text, a bracket in the URL and two links side by side, when scanned, then each link is read whole":
+    check markdownAnchors("[Book (2nd ed.)](https://x.example/b)", "") ==
+      @[Anchor(href: "https://x.example/b", text: "Book (2nd ed.)")]
+    check markdownAnchors("[a](u[)](v)", "") == @[Anchor(href: "u[", text: "a")]
+    check markdownAnchors("[a](u)[b](v)", "") == @[Anchor(href: "u", text: "a"), Anchor(href: "v", text: "b")]
+
+proc lineOf(o: BuildOutput; url: string): JsonNode =
+  for line in o.sourcesJsonl.strip.splitLines:
+    let j = parseJson(line)
+    if j["url"].getStr == url: return j
+  newJNull()
+
+proc sourceOf(o: BuildOutput; url: string): Source =
+  for s in o.sources:
+    if s.url == url: return s
+
+proc keysOf(j: JsonNode): seq[string] =
+  for k, _ in j.pairs: result.add k
+
+suite "FBC-01, FBC-04 and FBC-12 through assemble":
+  # SPEC: FBC-01
+  test "FBC-01 Given free-programming-books files outside the list directories or of another type, when assembled, then only the .md files under the list directories yield sources":
+    var inputs = BuildInputs(fpbCommit: "x", fetchedAt: "t", rules: rules)
+    inputs.fpbFiles = @[("README.md", "* [R](https://readme.example)\n"),
+                        ("books/notes.txt", "* [T](https://txt.example)\n"),
+                        ("more/x-en.md", "* [M](https://more.example)\n")]
+    let o = assemble(inputs)
+    check o.sources.len == 1
+    check o.sources[0].url == "https://more.example"
+
+  # SPEC: FBC-04
+  test "FBC-04 Given hillside web links and book pages, when checked, then web links are followed and book pages are not":
+    var inputs = BuildInputs(fpbCommit: "x", fetchedAt: "t", rules: rules)
+    inputs.catalogPages = @["""<a href="/patterns/patterns-catalog?task=weblink.go&amp;id=9">Nine</a>"""]
+    inputs.bookPages = @[("design-patterns", """<a href="/patterns/books/design-patterns/5-b">B</a>""")]
+    let o = assemble(inputs)
+    check expandable(o.sourceOf(weblinkUrl(9)))
+    check not expandable(o.sourceOf("https://hillside.net/patterns/books/design-patterns/5-b"))
+
+  # SPEC: FBC-04
+  test "FBC-04 Given ordinary entries, a followed meta-list and a depth-2 listing under a Meta-List title, when checked, then none has a reason not to follow it":
+    let xs = parseList("books/free-programming-books-subjects.md",
+      "### Algorithms\n* [B](https://b.example)\n### 0 - Meta-Lists\n* [L](https://github.com/o/r)\n")
+    check notFollowedReason(xs[0]) == ""
+    check notFollowedReason(xs[1]) == ""
+    let d2 = Source(url: "https://x.example", listings: @[Listing(origin: oFpb, depth: 2, file: "https://site.example",
+      via: "1", section: @["Awesome Meta-List"])])
+    check notFollowedReason(d2) == ""
+    var inputs = BuildInputs(fpbCommit: "x", fetchedAt: "t", rules: rules)
+    inputs.fpbFiles = @[("books/x-en.md", "### Algorithms\n* [B](https://b.example)\n")]
+    let o = assemble(inputs)
+    check o.notFollowed.len == 0
+    check parseJson(o.metaJson)["notFollowed"].len == 0
+
+  # SPEC: FBC-04
+  test "FBC-04 Given an expanded list with links of one-character text, empty text, another scheme and the list's own URL, when assembled, then only http(s) links with text other than the list become depth-2 sources":
+    var inputs = BuildInputs(fpbCommit: "x", fetchedAt: "t", rules: rules)
+    inputs.fpbFiles = @[("books/x-en.md", "### 0 - Meta-Lists\n* [GH](https://github.com/o/r)\n")]
+    let listId = $sourceIdOf("https://github.com/o/r")
+    inputs.expansions = @[Expansion(listId: listId, base: "https://github.com/o/r", markdown: true,
+      body: "[C](https://c.example) [](https://empty.example) [mail](mailto:m@x.example) [self](https://github.com/o/r/)")]
+    let o = assemble(inputs)
+    check o.sources.len == 2
+    let c = o.sourceOf("https://c.example")
+    check c.title == "C"
+    check c.listings == @[Listing(origin: oFpb, file: "https://github.com/o/r", depth: 2, via: listId, section: @["GH"])]
+
+  # SPEC: FBC-12
+  test "FBC-12 Given a full entry, a bare one and a reachability result, when assembled, then each sources.jsonl line has its keys and the optional ones only when they hold something":
+    var inputs = BuildInputs(fpbCommit: "x", fetchedAt: "t", rules: rules)
+    inputs.fpbFiles = @[("books/x-en.md", "### Algorithms\n#### Graphs\n" &
+      "* [Full](https://full.example) - A (PDF) (MIT) *(archived)*\n* [Bare](https://bare.example)\n")]
+    inputs.reach[$sourceIdOf("https://full.example")] = Reachability(status: rRedirected, code: 301,
+      final: "https://full.example/new")
+    let o = assemble(inputs)
+    let full = o.lineOf("https://full.example")
+    check full["authors"].getStr == "A"
+    check full["formats"] == %["PDF"]
+    check full["licenses"] == %["MIT"]
+    check full["archived"].getBool
+    check full["reach"].getStr == "redirected"
+    check full["httpCode"].getInt == 301
+    check full["finalUrl"].getStr == "https://full.example/new"
+    check full["listings"] == %*[{"origin": "free-programming-books", "file": "books/x-en.md",
+      "section": ["Algorithms", "Graphs"], "depth": 1}]
+    let bare = o.lineOf("https://bare.example")
+    check bare.keysOf == @["id", "url", "title", "lang", "relevance", "reach", "listings"]
+    check bare["reach"].getStr == "unchecked"
+
+  # SPEC: FBC-12
+  test "FBC-12 Given hillside, listed and expanded sources, when assembled, then depth-1 listings have no via and a depth-2 listing names its list":
+    var inputs = BuildInputs(fpbCommit: "x", fetchedAt: "t", rules: rules)
+    inputs.catalogPages = @["""<a href="/patterns/patterns-catalog?task=weblink.go&amp;id=9">Nine</a>"""]
+    inputs.bookPages = @[("design-patterns", """<a href="/patterns/books/design-patterns/5-b">B</a>""")]
+    inputs.listed = @[ListedSource(url: "https://tool.example/manual", title: "Manual", section: @["Manuals"])]
+    let listId = $sourceIdOf(weblinkUrl(9))
+    inputs.expansions = @[Expansion(listId: listId, base: "https://p.example/", markdown: false,
+      body: """<a href="/d2">Deep</a>""")]
+    let o = assemble(inputs)
+    for (url, origin) in [(weblinkUrl(9), "hillside"),
+                          ("https://hillside.net/patterns/books/design-patterns/5-b", "hillside"),
+                          ("https://tool.example/manual", "listed")]:
+      let l = o.lineOf(url)["listings"][0]
+      check l["depth"].getInt == 1
+      check l["origin"].getStr == origin
+      check not l.hasKey("via")
+    check o.lineOf("https://p.example/d2")["listings"] == %*[{"origin": "hillside", "file": weblinkUrl(9),
+      "section": ["Nine"], "depth": 2, "via": listId}]
+
+  # SPEC: FBC-12
+  test "FBC-12 Given sources of two depths, one reachability result and a meta-list not followed, when assembled, then meta.json holds the stated fields and counts and triage.json lists every id under its class":
+    var inputs = BuildInputs(fpbCommit: "abc", fetchedAt: "2026-01-01T00:00:00Z", rules: rules)
+    inputs.fpbFiles = @[("books/x-en.md", "### Algorithms\n* [A](https://a.example)\n* [B](https://b.example)\n" &
+      "### 0 - Meta-Lists\n* [Site](https://site.example)\n* [GH](https://github.com/o/r)\n")]
+    inputs.expansions = @[Expansion(listId: $sourceIdOf("https://github.com/o/r"), base: "https://github.com/o/r",
+      markdown: true, body: "[C](https://c.example)")]
+    inputs.reach[$sourceIdOf("https://a.example")] = Reachability(status: rOk, code: 200)
+    let o = assemble(inputs)
+    let meta = parseJson(o.metaJson)
+    check meta["fpbCommit"].getStr == "abc"
+    check meta["fetchedAt"].getStr == "2026-01-01T00:00:00Z"
+    check meta["depthLimit"].getInt == 2
+    check meta["maxLinksPerExpansion"].getInt == 2000
+    check meta["counts"] == %*{"sources": 5, "relevance.core": 2, "relevance.adjacent": 3, "relevance.out": 0,
+      "listings.depth1": 4, "listings.depth2": 1, "reach.ok": 1, "reach.unchecked": 4}
+    let siteId = $sourceIdOf("https://site.example")
+    check meta["notFollowed"] == %*[{"id": siteId, "reason": "meta-list is a whole site, not one page of links"}]
+    check o.notFollowed == @[(siteId, "meta-list is a whole site, not one page of links")]
+    let tri = parseJson(o.triageJson)
+    var listed = 0
+    for s in o.sources:
+      let id = $s.id
+      check %id in tri[$o.relevance[id]].elems
+      inc listed
+    check tri["core"].len + tri["adjacent"].len + tri["out"].len == listed
+    check tri["core"].len == 2
